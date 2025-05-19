@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Password Generator</title>
-</head>
 <body>
     <h1>Password Generator</h1>
-    <form method="post">
+
+    <div id="loading-message" style="display:none;">Loading...</div>
+
+    <form method="post" onsubmit="showLoading()">
         <label>Password Length: <input type="number" name="length" min="4" max="100" value="12"></label><br>
         <label><input type="checkbox" name="upper" checked> Include Uppercase</label><br>
         <label><input type="checkbox" name="lower" checked> Include Lowercase</label><br>
@@ -18,7 +16,11 @@
         <h2>Your Password: <code>{{ password }}</code></h2>
         <p>Strength: <strong>{{ strength }}</strong></p>
     {% endif %}
-</body>
-</html>
 
+    <script>
+        function showLoading() {
+            document.getElementById('loading-message').style.display = 'block';
+        }
+    </script>
+</body>
 
