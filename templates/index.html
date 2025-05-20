@@ -1,35 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>chessproking-tm's Password Simulator</title>
-    <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
+  <meta charset="UTF-8">
+  <title>chessproking-tm's Password Simulator</title>
+  <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #1a73e8;
+      margin-top: 40px;
+    }
+
+    form {
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      width: 300px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    input[type="submit"] {
+      background-color: #1a73e8;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 10px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #1669c1;
+    }
+
+    #loading-message {
+      margin-top: 10px;
+      color: #888;
+      font-style: italic;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #222;
+    }
+
+    code {
+      background: #e0e0e0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 1.1em;
+    }
+
+    p strong {
+      color: #0b8043;
+    }
+  </style>
 </head>
 <body>
-    <h1>chessproking-tm's Password Simulator</h1>
+  <h1>chessproking-tm's Password Simulator</h1>
 
-    <div id="loading-message" style="display:none;">Loading...</div>
+  <div id="loading-message" style="display:none;">Loading...</div>
 
-    <form method="post" onsubmit="showLoading()">
-        <label>Password Length: <input type="number" name="length" min="4" max="100" value="12"></label><br>
-        <label><input type="checkbox" name="upper" checked> Include Uppercase</label><br>
-        <label><input type="checkbox" name="lower" checked> Include Lowercase</label><br>
-        <label><input type="checkbox" name="digits" checked> Include Digits</label><br>
-        <label><input type="checkbox" name="special" checked> Include Special Characters</label><br>
-        <input type="submit" value="Generate Password">
-    </form>
+  <form method="post" onsubmit="showLoading()">
+    <label>Password Length:
+      <input type="number" name="length" min="4" max="100" value="12">
+    </label>
+    <label><input type="checkbox" name="upper" checked> Include Uppercase</label>
+    <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
+    <label><input type="checkbox" name="digits" checked> Include Digits</label>
+    <label><input type="checkbox" name="special" checked> Include Special Characters</label>
+    <input type="submit" value="Generate Password">
+  </form>
 
-    {% if password %}
-        <h2>Your Password: <code>{{ password }}</code></h2>
-        <p>Strength: <strong>{{ strength }}</strong></p>
-    {% endif %}
+  {% if password %}
+    <h2>Your Password: <code>{{ password }}</code></h2>
+    <p>Strength: <strong>{{ strength }}</strong></p>
+  {% endif %}
 
-    <script>
-        function showLoading() {
-            document.getElementById('loading-message').style.display = 'block';
-        }
-    </script>
+  <script>
+    function showLoading() {
+      document.getElementById('loading-message').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
+
 
 
