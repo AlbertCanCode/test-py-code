@@ -2,330 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ChessProKing-TM's Password Simulator</n>  <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
+  <title>ChessProKing-TM's Password Simulator</title>
+  <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
   <style>
-    :root {
-      --bg-light: #f4f6f9;
-      --bg-dark: #2b2b2b;
-      --fg-light: #222;
-      --fg-dark: #ddd;
-      --primary: #1a73e8;
-      --success: #0b8043;
-      --warning: #e2a500;
-      --danger: #d93025;
-    }
-
-    [data-theme="light"] {
-      background-color: var(--bg-light);
-      color: var(--fg-light);
-    }
-
-    [data-theme="dark"] {
-      background-color: var(--bg-dark);
-      color: var(--fg-dark);
-    }
-
     body {
-      margin: 0;
-      padding: 20px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
 
     h1 {
-      flex: 1;
-      font-size: 1.8em;
-      color: var(--primary);
-      margin: 0;
+      color: #1a73e8;
+      margin-top: 40px;
+      text-align: center;
     }
 
-    .toggle-theme {
-      background: none;
-      border: 2px solid var(--primary);
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: background-color 0.3s, color 0.3s;
+    .profile-link {
+      margin-top: 5px;
+      margin-bottom: 20px;
+      font-size: 14px;
     }
 
-    .toggle-theme:hover {
-      background-color: var(--primary);
-      color: white;
+    .profile-link a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    .profile-link a:hover {
+      text-decoration: underline;
     }
 
     form {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 320px;
-      max-width: 90%;
-      margin-bottom: 20px;
-      transition: background 0.3s;
-    }
-
-    [data-theme="dark"] form {
-      background: #3a3a3a;
+      width: 300px;
     }
 
     label {
       display: block;
-      margin-bottom: 12px;
-      font-size: 0.95em;
+      margin-bottom: 15px;
+      font-size: 15px;
     }
 
-    input[type="number"], input[type="checkbox"] {
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    input[type="checkbox"] {
       margin-right: 8px;
-      vertical-align: middle;
     }
 
-    .form-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    input[type="submit"], button#regen {
-      background-color: var(--primary);
+    input[type="submit"] {
+      background-color: #1a73e8;
       color: white;
-      padding: 10px;
+      padding: 10px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1em;
+      font-size: 15px;
       margin-top: 10px;
       width: 100%;
       transition: background-color 0.3s;
     }
 
-    input[type="submit"]:hover, button#regen:hover {
+    input[type="submit"]:hover {
       background-color: #1669c1;
     }
 
     #loading-message {
       margin-top: 10px;
+      color: #888;
       font-style: italic;
-      color: var(--fg-light);
     }
 
-    #output {
-      text-align: center;
+    h2 {
+      margin-top: 30px;
+      color: #222;
     }
 
     code {
-      display: inline-block;
       background: #e0e0e0;
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 1.1em;
-      word-break: break-all;
     }
 
-    [data-theme="dark"] code {
-      background: #555;
-    }
-
-    #stats {
-      margin-top: 10px;
-      font-size: 0.9em;
-    }
-
-    .strength-bar {
-      height: 12px;
-      background: #ccc;
-      border-radius: 6px;
-      overflow: hidden;
-      margin: 6px 0 12px;
-    }
-
-    .strength-bar-inner {
-      height: 100%;
-      width: 0;
-      background: var(--success);
-      transition: width 0.5s;
-    }
-
-    #history {
-      margin-top: 20px;
-      width: 320px;
-      max-width: 90%;
-    }
-
-    #history h3 {
-      margin-bottom: 8px;
-      font-size: 1em;
-    }
-
-    #history ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    #history li {
-      background: #fafafa;
-      padding: 6px;
-      margin-bottom: 4px;
-      border-radius: 4px;
-      font-size: 0.9em;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    [data-theme="dark"] #history li {
-      background: #444;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 0.8em;
-      color: var(--fg-light);
-      text-align: center;
-      max-width: 360px;
+    p strong {
+      color: #0b8043;
     }
   </style>
 </head>
-<body data-theme="light">
-  <header>
-    <h1>ChessProKing-TM's Password Simulator</h1>
-    <button class="toggle-theme">Dark Mode</button>
-  </header>
-  <div class="profile-link">Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a></div>
+<body>
+  <h1>ChessProKing-TM's Password Simulator</h1>
+  <div class="profile-link">
+    Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
+  </div>
+
   <div id="loading-message" style="display:none;">Loading...</div>
-  <form id="passForm">
-    <label class="form-row">Password Length:
-      <input type="number" name="length" id="length" min="4" max="100" value="12">
+
+  <form method="post" onsubmit="showLoading()">
+    <label>Password Length:
+      <input type="number" name="length" min="4" max="100" value="12">
     </label>
-    <label><input type="checkbox" name="upper" id="upper" checked> Include Uppercase</label>
-    <label><input type="checkbox" name="lower" id="lower" checked> Include Lowercase</label>
-    <label><input type="checkbox" name="digits" id="digits" checked> Include Digits</label>
-    <label><input type="checkbox" name="special" id="special" checked> Include Special Characters</label>
+    <label><input type="checkbox" name="upper" checked> Include Uppercase</label>
+    <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
+    <label><input type="checkbox" name="digits" checked> Include Digits</label>
+    <label><input type="checkbox" name="special" checked> Include Special Characters</label>
     <input type="submit" value="Generate Password">
-    <button type="button" id="regen">Refresh Password</button>
   </form>
-  <div id="output">
-    <h2>Your Password: <code id="password"></code></h2>
-    <div class="strength-bar"><div class="strength-bar-inner" id="strengthBar"></div></div>
-    <p id="strengthText"></p>
-    <div id="stats"></div>
-  </div>
-  <div id="history">
-    <h3>Password History</h3>
-    <ul id="historyList"></ul>
-  </div>
-  <footer>We do not save any data from this website.</footer>
+
+  {% if password %}
+    <h2>Your Password: <code>{{ password }}</code></h2>
+    <p>Strength: <strong>{{ strength }}</strong></p>
+  {% endif %}
 
   <script>
-    const form = document.getElementById('passForm');
-    const passEl = document.getElementById('password');
-    const strengthBar = document.getElementById('strengthBar');
-    const strengthText = document.getElementById('strengthText');
-    const statsEl = document.getElementById('stats');
-    const historyList = document.getElementById('historyList');
-    const regenBtn = document.getElementById('regen');
-    const themeBtn = document.querySelector('.toggle-theme');
-    const body = document.body;
-    let history = [];
-
-    function generatePassword() {
-      const len = parseInt(document.getElementById('length').value);
-      const useUpper = document.getElementById('upper').checked;
-      const useLower = document.getElementById('lower').checked;
-      const useDigits = document.getElementById('digits').checked;
-      const useSpecial = document.getElementById('special').checked;
-      let charset = '';
-      if (useUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      if (useLower) charset += 'abcdefghijklmnopqrstuvwxyz';
-      if (useDigits) charset += '0123456789';
-      if (useSpecial) charset += '!@#$%^&*()_+{}[]';
-      let pwd = '';
-      for (let i = 0; i < len; i++) pwd += charset.charAt(Math.floor(Math.random() * charset.length));
-      return pwd;
-    }
-
-    function evaluateStrength(pwd) {
-      let score = pwd.length * 4;
-      if (/[A-Z]/.test(pwd)) score += 5;
-      if (/[a-z]/.test(pwd)) score += 5;
-      if (/[0-9]/.test(pwd)) score += 5;
-      if (/[^A-Za-z0-9]/.test(pwd)) score += 5;
-      // penalties
-      const repeats = pwd.length - new Set(pwd).size;
-      score -= repeats * 2;
-      return Math.max(score, 0);
-    }
-
-    function updateUI(pwd) {
-      passEl.textContent = pwd;
-      history.unshift(pwd);
-      if (history.length > 5) history.pop();
-      historyList.innerHTML = '';
-      history.forEach(pw => {
-        const li = document.createElement('li');
-        li.textContent = pw;
-        historyList.appendChild(li);
-      });
-
-      // stats
-      const len = pw.length;
-      const uppers = (pw.match(/[A-Z]/g) || []).length;
-      const lowers = (pw.match(/[a-z]/g) || []).length;
-      const digits = (pw.match(/[0-9]/g) || []).length;
-      const specials = (pw.match(/[^A-Za-z0-9]/g) || []).length;
-      statsEl.innerHTML = `Length: ${len} | Upper: ${uppers} | Lower: ${lowers} | Digits: ${digits} | Special: ${specials}`;
-
-      // strength
-      const score = evaluateStrength(pw);
-      const pct = Math.min(score, 100);
-      strengthBar.style.width = pct + '%';
-      let label = 'Very Weak';
-      let color = '--danger';
-      if (pct > 80) { label = 'Very Strong'; color = '--success'; }
-      else if (pct > 60) { label = 'Strong'; color = '--success'; }
-      else if (pct > 40) { label = 'Medium'; color = '--warning'; }
-      else if (pct > 20) { label = 'Weak'; color = '--warning'; }
-      strengthText.textContent = `Strength: ${label} (${score})`;
-      strengthBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue(color);
-
-      // tips/warnings
-      let tips = [];
-      if (len < 8) tips.push('Password is short');
-      if (!document.getElementById('digits').checked) tips.push('Include digits for more security');
-      if (!document.getElementById('upper').checked) tips.push('Include uppercase letters');
-      if (!document.getElementById('special').checked) tips.push('Include special characters');
-      const tipHtml = tips.length ? '<p><strong>Tips:</strong> ' + tips.join(', ') + '</p>' : '';
-      statsEl.insertAdjacentHTML('afterend', tipHtml);
-    }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
+    function showLoading() {
       document.getElementById('loading-message').style.display = 'block';
-      setTimeout(() => {
-        const pwd = generatePassword();
-        document.getElementById('loading-message').style.display = 'none';
-        updateUI(pwd);
-      }, 500);
-    });
-
-    regenBtn.addEventListener('click', () => updateUI(passEl.textContent || generatePassword()));
-
-    themeBtn.addEventListener('click', () => {
-      const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      body.setAttribute('data-theme', newTheme);
-      themeBtn.textContent = newTheme === 'light' ? 'Dark Mode' : 'Light Mode';
-    });
-
-    // initial
-    updateUI(generatePassword());
+    }
   </script>
 </body>
 </html>
