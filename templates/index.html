@@ -5,9 +5,28 @@
   <title>ChessProKing-TM's Password Simulator</title>
   <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
   <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --text-color: #000;
+      --card-bg: #ffffff;
+      --input-bg: #fff;
+      --highlight: #1a73e8;
+      --box-shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
+      --input-bg: #2c2c2c;
+      --highlight: #90caf9;
+      --box-shadow: rgba(255, 255, 255, 0.05);
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f9;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
       padding: 0;
       display: flex;
@@ -15,10 +34,11 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     h1 {
-      color: #1a73e8;
+      color: var(--highlight);
       margin-top: 40px;
       text-align: center;
     }
@@ -30,7 +50,7 @@
     }
 
     .profile-link a {
-      color: #1a73e8;
+      color: var(--highlight);
       text-decoration: none;
     }
 
@@ -39,10 +59,10 @@
     }
 
     form {
-      background: #ffffff;
+      background: var(--card-bg);
       padding: 30px 40px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px var(--box-shadow);
       width: 300px;
     }
 
@@ -52,10 +72,20 @@
       font-size: 15px;
     }
 
+    input[type="number"],
+    input[type="submit"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      background: var(--input-bg);
+      color: var(--text-color);
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
     input[type="number"] {
       width: 60px;
-      padding: 5px;
-      margin-left: 10px;
     }
 
     input[type="checkbox"] {
@@ -63,16 +93,13 @@
     }
 
     input[type="submit"] {
-      background-color: #1a73e8;
+      background-color: var(--highlight);
       color: white;
-      padding: 10px 16px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
       font-size: 15px;
       margin-top: 10px;
-      width: 100%;
       transition: background-color 0.3s;
+      cursor: pointer;
     }
 
     input[type="submit"]:hover {
@@ -93,7 +120,7 @@
 
     h2 {
       margin-top: 30px;
-      color: #222;
+      color: var(--text-color);
     }
 
     code {
@@ -106,6 +133,16 @@
     p strong {
       color: #0b8043;
     }
+
+    .toggle-mode {
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--highlight);
+      background: none;
+      border: none;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -114,11 +151,13 @@
     Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
   </div>
 
+  <button class="toggle-mode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
   <div id="loading-message">Loading...</div>
 
   <form id="password-form">
     <label>Password Length:
-      <input type="number" name="length" id="length" min="4" max="100" value="12">
+      <input type="number" name="length" id="length" min="4" max="50" value="12">
     </label>
     <label><input type="checkbox" name="upper" id="upper"> Include Uppercase</label>
     <label><input type="checkbox" name="lower" id="lower"> Include Lowercase</label>
@@ -133,11 +172,25 @@
     const form = document.getElementById('password-form');
     const loadingMsg = document.getElementById('loading-message');
     const output = document.getElementById('output');
-
     const settings = ['upper', 'lower', 'digits', 'special'];
 
-    // Load saved checkbox states
+    // Dark Mode Setup
+    function applyDarkMode() {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle('dark');
+      localStorage.setItem('darkMode', isDark);
+    }
+
+    // Load saved states
     window.addEventListener('load', () => {
+      applyDarkMode();
       settings.forEach(id => {
         const saved = localStorage.getItem(id);
         if (saved !== null) {
@@ -146,14 +199,14 @@
       });
     });
 
-    // Save checkbox changes
+    // Save checkbox states
     settings.forEach(id => {
       document.getElementById(id).addEventListener('change', (e) => {
         localStorage.setItem(id, e.target.checked);
       });
     });
 
-    // Handle form submit with JS
+    // Form handler
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       loadingMsg.style.display = 'block';
@@ -188,7 +241,6 @@
         password += allChars[rand];
       }
 
-      // Calculate strength
       let strength = 'Weak';
       if (length >= 12 && useUpper && useLower && useDigits && useSpecial) strength = 'Strong';
       else if (length >= 8 && (useUpper + useLower + useDigits + useSpecial >= 3)) strength = 'Medium';
@@ -199,4 +251,3 @@
   </script>
 </body>
 </html>
-
