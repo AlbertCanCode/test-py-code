@@ -83,6 +83,12 @@
       margin-top: 10px;
       color: #888;
       font-style: italic;
+      display: none;
+    }
+
+    #output {
+      margin-top: 20px;
+      text-align: center;
     }
 
     h2 {
@@ -108,28 +114,89 @@
     Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
   </div>
 
-  <div id="loading-message" style="display:none;">Loading...</div>
+  <div id="loading-message">Loading...</div>
 
-  <form method="post" onsubmit="showLoading()">
+  <form id="password-form">
     <label>Password Length:
-      <input type="number" name="length" min="4" max="100" value="12">
+      <input type="number" name="length" id="length" min="4" max="100" value="12">
     </label>
-    <label><input type="checkbox" name="upper" checked> Include Uppercase</label>
-    <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
-    <label><input type="checkbox" name="digits" checked> Include Digits</label>
-    <label><input type="checkbox" name="special" checked> Include Special Characters</label>
+    <label><input type="checkbox" name="upper" id="upper"> Include Uppercase</label>
+    <label><input type="checkbox" name="lower" id="lower"> Include Lowercase</label>
+    <label><input type="checkbox" name="digits" id="digits"> Include Digits</label>
+    <label><input type="checkbox" name="special" id="special"> Include Special Characters</label>
     <input type="submit" value="Generate Password">
   </form>
 
-  {% if password %}
-    <h2>Your Password: <code>{{ password }}</code></h2>
-    <p>Strength: <strong>{{ strength }}</strong></p>
-  {% endif %}
+  <div id="output"></div>
 
   <script>
-    function showLoading() {
-      document.getElementById('loading-message').style.display = 'block';
-    }
+    const form = document.getElementById('password-form');
+    const loadingMsg = document.getElementById('loading-message');
+    const output = document.getElementById('output');
+
+    const settings = ['upper', 'lower', 'digits', 'special'];
+
+    // Load saved checkbox states
+    window.addEventListener('load', () => {
+      settings.forEach(id => {
+        const saved = localStorage.getItem(id);
+        if (saved !== null) {
+          document.getElementById(id).checked = saved === 'true';
+        }
+      });
+    });
+
+    // Save checkbox changes
+    settings.forEach(id => {
+      document.getElementById(id).addEventListener('change', (e) => {
+        localStorage.setItem(id, e.target.checked);
+      });
+    });
+
+    // Handle form submit with JS
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      loadingMsg.style.display = 'block';
+      output.innerHTML = '';
+
+      const length = parseInt(document.getElementById('length').value);
+      const useUpper = document.getElementById('upper').checked;
+      const useLower = document.getElementById('lower').checked;
+      const useDigits = document.getElementById('digits').checked;
+      const useSpecial = document.getElementById('special').checked;
+
+      const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lower = 'abcdefghijklmnopqrstuvwxyz';
+      const digits = '0123456789';
+      const special = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+      let allChars = '';
+      if (useUpper) allChars += upper;
+      if (useLower) allChars += lower;
+      if (useDigits) allChars += digits;
+      if (useSpecial) allChars += special;
+
+      if (!allChars) {
+        output.innerHTML = '<p>Please select at least one character set.</p>';
+        loadingMsg.style.display = 'none';
+        return;
+      }
+
+      let password = '';
+      for (let i = 0; i < length; i++) {
+        const rand = Math.floor(Math.random() * allChars.length);
+        password += allChars[rand];
+      }
+
+      // Calculate strength
+      let strength = 'Weak';
+      if (length >= 12 && useUpper && useLower && useDigits && useSpecial) strength = 'Strong';
+      else if (length >= 8 && (useUpper + useLower + useDigits + useSpecial >= 3)) strength = 'Medium';
+
+      output.innerHTML = `<h2>Your Password: <code>${password}</code></h2><p>Strength: <strong>${strength}</strong></p>`;
+      loadingMsg.style.display = 'none';
+    });
   </script>
 </body>
 </html>
+
