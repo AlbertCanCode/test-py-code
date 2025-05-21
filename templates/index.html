@@ -102,7 +102,7 @@
       cursor: pointer;
     }
 
-    input[type="submit"], button {
+    input[type="submit"] {
       background-color: var(--button-bg-light);
       color: white;
       padding: 10px 16px;
@@ -114,13 +114,13 @@
       width: 100%;
       transition: background-color 0.3s;
     }
-    input[type="submit"]:hover, button:hover {
+    input[type="submit"]:hover {
       background-color: var(--button-hover-light);
     }
-    body.dark input[type="submit"], body.dark button {
+    body.dark input[type="submit"] {
       background-color: var(--button-bg-dark);
     }
-    body.dark input[type="submit"]:hover, body.dark button:hover {
+    body.dark input[type="submit"]:hover {
       background-color: var(--button-hover-dark);
     }
 
@@ -129,6 +129,9 @@
       color: var(--text-light);
       text-align: center;
       transition: color 0.3s;
+      word-break: break-all;
+      font-weight: bold;
+      font-size: 1.2em;
     }
     body.dark #password-output {
       color: var(--text-dark);
@@ -190,11 +193,15 @@
       background-color: var(--button-bg-light);
       color: white;
       border: none;
-      padding: 8px 12px;
+      padding: 6px 12px; /* smaller padding */
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
       transition: background-color 0.3s;
+      width: auto; /* fit content */
+      min-width: 120px;
+      align-self: center;
+      display: block;
     }
     #copy-btn:hover {
       background-color: var(--button-hover-light);
@@ -239,129 +246,239 @@
     body.dark #history ul li {
       border-color: #555;
     }
+
+    /* Dark mode toggle switch with icons */
+    #dark-mode-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      width: 70px; /* wider to fit icons */
+      height: 24px;
+      cursor: pointer;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      font-size: 14px;
+      color: var(--text-light);
+      transition: color 0.3s;
+    }
+    body.dark #dark-mode-toggle {
+      color: var(--text-dark);
+    }
+
+    #dark-mode-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    #dark-mode-toggle label {
+      display: block;
+      width: 40px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      transition: background 0.3s;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #dark-mode-toggle label::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+
+    #dark-mode-toggle input:checked + label {
+      background: var(--button-bg-light);
+    }
+    body.dark #dark-mode-toggle input:checked + label {
+      background: var(--button-bg-dark);
+    }
+
+    #dark-mode-toggle input:checked + label::before {
+      transform: translateX(20px);
+    }
+
+    /* Sun and Moon icons using inline SVG as background images */
+    #dark-mode-toggle .icon-sun,
+    #dark-mode-toggle .icon-moon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    /* Layout icons on left and right of toggle */
+    #dark-mode-toggle .icon-sun {
+      margin-left: 0;
+    }
+    #dark-mode-toggle .icon-moon {
+      margin-right: 0;
+    }
   </style>
 </head>
 <body>
-  <button id="dark-toggle" aria-label="Toggle dark mode" title="Toggle dark mode" style="position: fixed; top: 10px; right: 10px; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer;">
-    🌙
-  </button>
+  <!-- Dark mode toggle switch -->
+  <div id="dark-mode-toggle" aria-label="Toggle dark mode" role="switch" tabindex="0">
+    <!-- Sun icon on left -->
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1zm5.364 2.136a1 1 0 0 1 1.414 1.415l-1.06 1.06a1 1 0 0 1-1.414-1.415l1.06-1.06zM19.5 12a1 1 0 0 1 1 1h1.5a1 1 0 1 1 0 2H20.5a1 1 0 0 1-1-1 1 1 0 0 1 1-1zm-2.636 5.364a1 1 0 0 1 1.415 1.415l-1.06 1.06a1 1 0 0 1-1.414-1.415l1.06-1.06zM12 19.5a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V20.5a1 1 0 0 1 1-1zm-5.364-2.136a1 1 0 0 1 1.414 1.415l-1.06 1.06a1 1 0 0 1-1.415-1.415l1.06-1.06zM4.5 12a1 1 0 0 1 1-1H7a1 1 0 1 1 0 2H5.5a1 1 0 0 1-1-1zm2.136-5.364a1 1 0 0 1 1.415-1.414l1.06 1.06a1 1 0 0 1-1.414 1.415l-1.06-1.06zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+    </svg>
+
+    <input type="checkbox" id="darkmode" aria-checked="false" />
+    <label for="darkmode" aria-label="Toggle dark mode"></label>
+
+    <!-- Moon icon on right -->
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M21 12.79A9 9 0 0 1 11.21 3a7 7 0 1 0 9.79 9.79z"/>
+    </svg>
+  </div>
 
   <h1>ChessProKing-TM's Password Simulator</h1>
   <div class="profile-link">
-    Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank" rel="noopener noreferrer">ChessProKing-TM</a>
+    <a href="https://scratch.mit.edu/users/ChessProKing_TM/" target="_blank" rel="noopener noreferrer">Scratch Profile</a>
   </div>
 
-  <form method="post" id="password-form" onsubmit="showLoading()">
-    <label>Password Length:
-      <input type="number" name="length" id="length" min="4" max="50" value="12" required>
+  <form id="password-form" aria-label="Password generator form">
+    <label>
+      Length (8-50):
+      <input type="number" id="length" name="length" min="8" max="50" value="12" required />
     </label>
-    <label><input type="checkbox" name="upper" id="upper" checked> Include Uppercase</label>
-    <label><input type="checkbox" name="lower" id="lower" checked> Include Lowercase</label>
-    <label><input type="checkbox" name="digits" id="digits" checked> Include Digits</label>
-    <label><input type="checkbox" name="special" id="special" checked> Include Special Characters</label>
-    <label><input type="checkbox" id="readable" > Use Readable Words Mode</label>
-    <input type="submit" value="Generate Password">
+    <label><input type="checkbox" id="upper" name="upper" checked /> Include Uppercase Letters</label>
+    <label><input type="checkbox" id="lower" name="lower" checked /> Include Lowercase Letters</label>
+    <label><input type="checkbox" id="numbers" name="numbers" checked /> Include Numbers</label>
+    <label><input type="checkbox" id="symbols" name="symbols" checked /> Include Symbols</label>
+    <input type="submit" value="Generate Password" />
   </form>
 
-  <div id="loading-message">Loading...</div>
+  <div id="password-output" aria-live="polite" aria-atomic="true" tabindex="0"></div>
+  <button id="copy-btn" aria-label="Copy password to clipboard">Copy Password</button>
+  <div id="loading-message" role="status" aria-live="polite"></div>
 
-  <div id="password-output" aria-live="polite" aria-atomic="true" style="display:none;">
-    <h2>Your Password: <code id="password-text"></code></h2>
-    <button id="copy-btn" aria-label="Copy password to clipboard">Copy Password</button>
-    <p>Password strength: <strong id="password-strength"></strong></p>
+  <div class="security-badge" aria-label="Security assurance">
+    <strong>Security First:</strong> No passwords are stored or sent anywhere. Your safety is our priority.
   </div>
 
-  <div id="history" aria-label="Password history" hidden>
-    <h3>Password History</h3>
+  <div id="history" aria-label="Generated password history">
+    <h3>Previously Generated Passwords</h3>
     <ul id="history-list"></ul>
   </div>
 
-  <div class="security-badge" role="note" aria-label="Privacy statement">
-    🔒 We do NOT save any information, use cookies, analytics, or make remote calls. Your data stays on your device.
-  </div>
-
   <script>
-    // Dark mode toggle with persistence
-    const darkToggle = document.getElementById('dark-toggle');
+    // Dark mode toggle persistence
+    const toggle = document.getElementById('darkmode');
     const body = document.body;
-    const PASSWORD_HISTORY_KEY = 'password_history';
-    const READABLE_MODE_KEY = 'readable_mode';
 
-    // Load dark mode from localStorage
-    if (localStorage.getItem('dark_mode') === 'true') {
+    // Load dark mode state from localStorage
+    if(localStorage.getItem('darkMode') === 'true') {
       body.classList.add('dark');
-      darkToggle.textContent = '☀️';
+      toggle.checked = true;
+      toggle.setAttribute('aria-checked', 'true');
     }
 
-    darkToggle.addEventListener('click', () => {
-      body.classList.toggle('dark');
-      if (body.classList.contains('dark')) {
-        darkToggle.textContent = '☀️';
-        localStorage.setItem('dark_mode', 'true');
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+        toggle.setAttribute('aria-checked', 'true');
       } else {
-        darkToggle.textContent = '🌙';
-        localStorage.setItem('dark_mode', 'false');
+        body.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+        toggle.setAttribute('aria-checked', 'false');
       }
     });
 
-    // Save and restore readable checkbox state
-    const readableCheckbox = document.getElementById('readable');
-    if(localStorage.getItem(READABLE_MODE_KEY) === 'true') {
-      readableCheckbox.checked = true;
-    }
-    readableCheckbox.addEventListener('change', () => {
-      localStorage.setItem(READABLE_MODE_KEY, readableCheckbox.checked);
-    });
-
-    // Show loading message on form submit
-    function showLoading() {
-      document.getElementById('loading-message').style.display = 'block';
-    }
-
-    // Password copy button
+    // Password generator
+    const form = document.getElementById('password-form');
+    const output = document.getElementById('password-output');
     const copyBtn = document.getElementById('copy-btn');
-    const passwordText = document.getElementById('password-text');
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(passwordText.textContent).then(() => {
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => copyBtn.textContent = 'Copy Password', 1500);
-      });
+    const loadingMessage = document.getElementById('loading-message');
+    const historyList = document.getElementById('history-list');
+
+    // Password history stored in-memory (can extend to localStorage if desired)
+    const passwordHistory = [];
+
+    function generatePassword(length, useUpper, useLower, useNumbers, useSymbols) {
+      const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+      const numberChars = "0123456789";
+      const symbolChars = "!@#$%^&*()_+-=[]{}|;:',.<>/?`~";
+
+      let charPool = "";
+      if (useUpper) charPool += upperChars;
+      if (useLower) charPool += lowerChars;
+      if (useNumbers) charPool += numberChars;
+      if (useSymbols) charPool += symbolChars;
+
+      if (charPool.length === 0) return "";
+
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += charPool.charAt(Math.floor(Math.random() * charPool.length));
+      }
+      return password;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      loadingMessage.textContent = "Generating...";
+      loadingMessage.style.display = "block";
+
+      setTimeout(() => {
+        const length = Math.min(Math.max(parseInt(form.length.value), 8), 50);
+        const useUpper = form.upper.checked;
+        const useLower = form.lower.checked;
+        const useNumbers = form.numbers.checked;
+        const useSymbols = form.symbols.checked;
+
+        const pwd = generatePassword(length, useUpper, useLower, useNumbers, useSymbols);
+        output.textContent = pwd || "Please select at least one character type.";
+
+        if(pwd) {
+          // Add to history and update UI
+          passwordHistory.unshift(pwd);
+          if(passwordHistory.length > 10) passwordHistory.pop(); // limit to 10 items
+          updateHistory();
+        }
+
+        loadingMessage.style.display = "none";
+      }, 100); // simulate async
     });
 
-    // Password history management
-    const historyList = document.getElementById('history-list');
-    const historyDiv = document.getElementById('history');
-
-    // Load password history from localStorage
-    let history = JSON.parse(localStorage.getItem(PASSWORD_HISTORY_KEY)) || [];
-
-    function renderHistory() {
-      if(history.length === 0) {
-        historyDiv.hidden = true;
-        return;
+    copyBtn.addEventListener('click', () => {
+      const pwd = output.textContent;
+      if(pwd && pwd !== "Please select at least one character type.") {
+        navigator.clipboard.writeText(pwd).then(() => {
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy Password";
+          }, 1500);
+        }).catch(() => {
+          alert("Failed to copy. Please copy manually.");
+        });
       }
-      historyDiv.hidden = false;
-      historyList.innerHTML = '';
-      history.forEach(pass => {
+    });
+
+    function updateHistory() {
+      historyList.innerHTML = "";
+      passwordHistory.forEach(pwd => {
         const li = document.createElement('li');
-        li.textContent = pass;
+        li.textContent = pwd;
         historyList.appendChild(li);
       });
     }
-
-    renderHistory();
-
-    // On page load, if password is present (server rendered), add to history
-    window.addEventListener('DOMContentLoaded', () => {
-      const pwd = passwordText.textContent.trim();
-      if(pwd.length > 0 && !history.includes(pwd)) {
-        history.push(pwd);
-        if(history.length > 10) history.shift(); // Keep last 10 passwords
-        localStorage.setItem(PASSWORD_HISTORY_KEY, JSON.stringify(history));
-        renderHistory();
-        document.getElementById('password-output').style.display = 'block';
-      }
-    });
   </script>
 </body>
 </html>
