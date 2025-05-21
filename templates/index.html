@@ -11,12 +11,16 @@
       --card-color: #fff;
       --primary: #1a73e8;
       --hover: #1669c1;
+      --badge-bg: #e0f7fa;
+      --badge-text: #006064;
     }
 
     [data-theme='dark'] {
       --bg-color: #121212;
       --text-color: #eee;
       --card-color: #1f1f1f;
+      --badge-bg: #004d40;
+      --badge-text: #b2dfdb;
     }
 
     body {
@@ -74,6 +78,7 @@
 
     input[type="checkbox"] {
       margin-right: 8px;
+      cursor: pointer;
     }
 
     input[type="submit"], button {
@@ -102,6 +107,7 @@
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 1.1em;
+      user-select: all;
     }
 
     .copy-btn {
@@ -109,7 +115,7 @@
     }
 
     .theme-toggle {
-      margin: 10px auto;
+      margin: 10px auto 20px;
       text-align: center;
     }
 
@@ -125,6 +131,27 @@
     .history li {
       margin-bottom: 4px;
       font-size: 0.95em;
+      word-break: break-word;
+    }
+
+    /* Badge style */
+    .security-badge {
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 0.9em;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin: 15px auto 30px;
+      width: 320px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .security-badge input[type="checkbox"] {
+      margin: 0;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -146,7 +173,7 @@
     <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
     <label><input type="checkbox" name="digits" checked> Include Digits</label>
     <label><input type="checkbox" name="special" checked> Include Special Characters</label>
-    <label><input type="checkbox" name="readable"> Use Readable Words</label>
+    <label><input type="checkbox" id="readable-checkbox" name="readable"> Use Readable Words</label>
     <input type="submit" value="Generate Password" onclick="generatePassword()">
   </form>
 
@@ -167,11 +194,18 @@
     </ul>
   </div>
 
+  <div class="security-badge">
+    <input type="checkbox" id="security-ack" />
+    <label for="security-ack">I confirm no analytics, cookies, or remote calls on this site</label>
+  </div>
+
   <script>
+    // --- THEME TOGGLE ---
     function toggleTheme() {
       const current = document.documentElement.getAttribute("data-theme");
-      document.documentElement.setAttribute("data-theme", current === "dark" ? "light" : "dark");
-      localStorage.setItem("theme", current === "dark" ? "light" : "dark");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
     }
 
     function loadTheme() {
@@ -179,18 +213,57 @@
       document.documentElement.setAttribute("data-theme", saved);
     }
 
+    // --- COPY PASSWORD ---
     function copyToClipboard() {
       const pw = document.getElementById("pw-text").innerText;
       navigator.clipboard.writeText(pw);
       alert("Password copied to clipboard!");
     }
 
-    function generatePassword() {
-      // Use AJAX or Fetch API if needed. Otherwise, keep using Flask POST if handling in backend.
-      document.querySelector("form").submit(); // Keep for now.
+    // --- REMEMBER READABLE CHECKBOX ---
+    const readableCheckbox = document.getElementById("readable-checkbox");
+
+    function saveReadableState() {
+      localStorage.setItem("readableChecked", readableCheckbox.checked);
     }
 
-    loadTheme();
+    function loadReadableState() {
+      const saved = localStorage.getItem("readableChecked");
+      readableCheckbox.checked = saved === "true";
+    }
+
+    readableCheckbox.addEventListener("change", saveReadableState);
+
+    // --- SECURITY BADGE ---
+    const securityAck = document.getElementById("security-ack");
+
+    function saveSecurityAck() {
+      localStorage.setItem("securityAck", securityAck.checked);
+    }
+
+    function loadSecurityAck() {
+      const saved = localStorage.getItem("securityAck");
+      securityAck.checked = saved === "true";
+    }
+
+    securityAck.addEventListener("change", saveSecurityAck);
+
+    // --- FORM SUBMIT (calls Flask backend) ---
+    function generatePassword() {
+      // Optional: Check security acknowledgment before allowing generate
+      if (!securityAck.checked) {
+        alert("Please confirm no analytics, cookies, or remote calls by checking the box below.");
+        return;
+      }
+      document.querySelector("form").submit();
+    }
+
+    // --- INITIAL LOAD ---
+    window.onload = function () {
+      loadTheme();
+      loadReadableState();
+      loadSecurityAck();
+    };
   </script>
 </body>
 </html>
