@@ -129,9 +129,11 @@
       color: var(--text-light);
       text-align: center;
       transition: color 0.3s;
-      word-break: break-all;
+      word-break: break-word;
       font-weight: bold;
       font-size: 1.2em;
+      min-height: 1.5em;
+      user-select: all;
     }
     body.dark #password-output {
       color: var(--text-dark);
@@ -185,6 +187,9 @@
         width: 90%;
         padding: 20px;
       }
+      #history {
+        width: 90%;
+      }
     }
 
     /* Copy button style */
@@ -193,15 +198,15 @@
       background-color: var(--button-bg-light);
       color: white;
       border: none;
-      padding: 6px 12px; /* smaller padding */
-      border-radius: 5px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.3s;
-      width: auto; /* fit content */
-      min-width: 120px;
+      font-size: 15px;
+      width: 160px;
       align-self: center;
       display: block;
+      transition: background-color 0.3s;
+      user-select: none;
     }
     #copy-btn:hover {
       background-color: var(--button-hover-light);
@@ -216,13 +221,15 @@
     /* History list style */
     #history {
       max-width: 320px;
-      margin: 20px auto 0 auto;
+      margin: 20px auto 30px auto;
       background: var(--card-light);
       border-radius: 10px;
       padding: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: background 0.3s;
       font-size: 14px;
+      overflow-y: auto;
+      max-height: 140px;
     }
     body.dark #history {
       background: var(--card-dark);
@@ -235,13 +242,13 @@
     #history ul {
       list-style: none;
       padding-left: 0;
-      max-height: 120px;
-      overflow-y: auto;
+      margin: 0;
     }
     #history ul li {
       padding: 5px 0;
       border-bottom: 1px solid #ccc;
       user-select: all;
+      word-break: break-word;
     }
     body.dark #history ul li {
       border-color: #555;
@@ -252,7 +259,7 @@
       position: fixed;
       top: 15px;
       right: 15px;
-      width: 70px; /* wider to fit icons */
+      width: 70px;
       height: 24px;
       cursor: pointer;
       z-index: 1000;
@@ -300,185 +307,221 @@
     }
 
     #dark-mode-toggle input:checked + label {
-      background: var(--button-bg-light);
+      background: #666;
     }
-    body.dark #dark-mode-toggle input:checked + label {
-      background: var(--button-bg-dark);
-    }
-
     #dark-mode-toggle input:checked + label::before {
       transform: translateX(20px);
     }
 
-    /* Sun and Moon icons using inline SVG as background images */
-    #dark-mode-toggle .icon-sun,
-    #dark-mode-toggle .icon-moon {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      fill: currentColor;
-    }
-
-    /* Layout icons on left and right of toggle */
-    #dark-mode-toggle .icon-sun {
-      margin-left: 0;
-    }
-    #dark-mode-toggle .icon-moon {
-      margin-right: 0;
+    /* Icons inside toggle container */
+    #dark-mode-toggle .icon {
+      font-size: 16px;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <!-- Dark mode toggle switch -->
-  <div id="dark-mode-toggle" aria-label="Toggle dark mode" role="switch" tabindex="0">
-    <!-- Sun icon on left -->
-    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1zm5.364 2.136a1 1 0 0 1 1.414 1.415l-1.06 1.06a1 1 0 0 1-1.414-1.415l1.06-1.06zM19.5 12a1 1 0 0 1 1 1h1.5a1 1 0 1 1 0 2H20.5a1 1 0 0 1-1-1 1 1 0 0 1 1-1zm-2.636 5.364a1 1 0 0 1 1.415 1.415l-1.06 1.06a1 1 0 0 1-1.414-1.415l1.06-1.06zM12 19.5a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V20.5a1 1 0 0 1 1-1zm-5.364-2.136a1 1 0 0 1 1.414 1.415l-1.06 1.06a1 1 0 0 1-1.415-1.415l1.06-1.06zM4.5 12a1 1 0 0 1 1-1H7a1 1 0 1 1 0 2H5.5a1 1 0 0 1-1-1zm2.136-5.364a1 1 0 0 1 1.415-1.414l1.06 1.06a1 1 0 0 1-1.414 1.415l-1.06-1.06zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
-    </svg>
-
-    <input type="checkbox" id="darkmode" aria-checked="false" />
-    <label for="darkmode" aria-label="Toggle dark mode"></label>
-
-    <!-- Moon icon on right -->
-    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M21 12.79A9 9 0 0 1 11.21 3a7 7 0 1 0 9.79 9.79z"/>
-    </svg>
-  </div>
-
   <h1>ChessProKing-TM's Password Simulator</h1>
   <div class="profile-link">
-    <a href="https://scratch.mit.edu/users/ChessProKing-TM/" target="_blank" rel="noopener noreferrer">Scratch Profile</a>
+    <a href="https://scratch.mit.edu/users/ChessProKing-TM" target="_blank" rel="noopener noreferrer">Visit ChessProKing-TM on Scratch</a>
   </div>
 
-  <form id="password-form" aria-label="Password generator form">
+  <form id="password-form" aria-label="Password Generator Form">
     <label>
-      Length (8-50):
-      <input type="number" id="length" name="length" min="8" max="50" value="12" required />
+      Password length (8-24): 
+      <input type="number" id="length" name="length" min="8" max="24" value="8" required aria-required="true" aria-describedby="length-desc" />
     </label>
-    <label><input type="checkbox" id="upper" name="upper" checked /> Include Uppercase Letters</label>
-    <label><input type="checkbox" id="lower" name="lower" checked /> Include Lowercase Letters</label>
-    <label><input type="checkbox" id="numbers" name="numbers" checked /> Include Numbers</label>
-    <label><input type="checkbox" id="symbols" name="symbols" checked /> Include Symbols</label>
-    <input type="submit" value="Generate Password" />
+    <p id="length-desc" style="font-size:12px; margin-top:-12px; margin-bottom:10px; color:#666;">
+      Choose a length between 8 and 24 characters.
+    </p>
+
+    <label>
+      <input type="checkbox" id="includeUppercase" name="uppercase" checked />
+      Include uppercase letters
+    </label>
+    <label>
+      <input type="checkbox" id="includeLowercase" name="lowercase" checked />
+      Include lowercase letters
+    </label>
+    <label>
+      <input type="checkbox" id="includeNumbers" name="numbers" checked />
+      Include numbers
+    </label>
+    <label>
+      <input type="checkbox" id="includeSymbols" name="symbols" />
+      Include symbols (e.g. !@#$%)
+    </label>
+    <input type="submit" value="Generate Password" aria-label="Generate password button" />
   </form>
 
-  <div id="password-output" aria-live="polite" aria-atomic="true" tabindex="0"></div>
-  <button id="copy-btn" aria-label="Copy password to clipboard">Copy Password</button>
-  <div id="loading-message" role="status" aria-live="polite"></div>
+  <div id="password-output" aria-live="polite" aria-atomic="true" role="region"></div>
+  <button id="copy-btn" aria-label="Copy password to clipboard" style="display:none;">Copy Password</button>
+  <div id="loading-message" aria-live="polite" role="alert"></div>
 
-  <div class="security-badge" aria-label="Security assurance">
-    <strong>Security First:</strong> No passwords are stored or sent anywhere. Your safety is our priority.
+  <div class="security-badge" aria-label="Security note">
+    <p>
+      <strong>Security note:</strong> Passwords are generated locally in your browser and are not saved or transmitted anywhere. This tool is for learning and simulation only.
+    </p>
   </div>
 
-  <div id="history" aria-label="Generated password history">
-    <h3>Previously Generated Passwords</h3>
+  <section id="history" aria-label="Password generation history" style="display:none;">
+    <h3>Generated Passwords History</h3>
     <ul id="history-list"></ul>
+  </section>
+
+  <!-- Dark Mode Toggle -->
+  <div id="dark-mode-toggle" role="switch" aria-checked="false" tabindex="0" aria-label="Toggle dark mode">
+    <span class="icon" aria-hidden="true">☀️</span>
+    <input type="checkbox" id="darkToggle" />
+    <label for="darkToggle"></label>
+    <span class="icon" aria-hidden="true">🌙</span>
   </div>
 
   <script>
-    // Dark mode toggle persistence
-    const toggle = document.getElementById('darkmode');
-    const body = document.body;
-
-    // Load dark mode state from localStorage
-    if(localStorage.getItem('darkMode') === 'true') {
-      body.classList.add('dark');
-      toggle.checked = true;
-      toggle.setAttribute('aria-checked', 'true');
-    }
-
-    toggle.addEventListener('change', () => {
-      if (toggle.checked) {
-        body.classList.add('dark');
-        localStorage.setItem('darkMode', 'true');
-        toggle.setAttribute('aria-checked', 'true');
-      } else {
-        body.classList.remove('dark');
-        localStorage.setItem('darkMode', 'false');
-        toggle.setAttribute('aria-checked', 'false');
-      }
-    });
-
-    // Password generator
     const form = document.getElementById('password-form');
     const output = document.getElementById('password-output');
     const copyBtn = document.getElementById('copy-btn');
-    const loadingMessage = document.getElementById('loading-message');
+    const loadingMsg = document.getElementById('loading-message');
+    const historySection = document.getElementById('history');
     const historyList = document.getElementById('history-list');
 
-    // Password history stored in-memory (can extend to localStorage if desired)
-    const passwordHistory = [];
+    // Character sets
+    const charSets = {
+      uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lowercase: 'abcdefghijklmnopqrstuvwxyz',
+      numbers: '0123456789',
+      symbols: '!@#$%^&*()_+[]{}|;:,.<>?/~`-='
+    };
 
-    function generatePassword(length, useUpper, useLower, useNumbers, useSymbols) {
-      const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const lowerChars = "abcdefghijklmnopqrstuvwxyz";
-      const numberChars = "0123456789";
-      const symbolChars = "!@#$%^&*()_+-=[]{}|;:',.<>/?`~";
+    // Generate password function
+    function generatePassword(length, options) {
+      let availableChars = '';
+      if (options.uppercase) availableChars += charSets.uppercase;
+      if (options.lowercase) availableChars += charSets.lowercase;
+      if (options.numbers) availableChars += charSets.numbers;
+      if (options.symbols) availableChars += charSets.symbols;
 
-      let charPool = "";
-      if (useUpper) charPool += upperChars;
-      if (useLower) charPool += lowerChars;
-      if (useNumbers) charPool += numberChars;
-      if (useSymbols) charPool += symbolChars;
-
-      if (charPool.length === 0) return "";
-
-      let password = "";
-      for (let i = 0; i < length; i++) {
-        password += charPool.charAt(Math.floor(Math.random() * charPool.length));
+      if (availableChars.length === 0) {
+        return '';
       }
+
+      let password = '';
+      for (let i = 0; i < length; i++) {
+        password += availableChars.charAt(Math.floor(Math.random() * availableChars.length));
+      }
+
       return password;
     }
 
-    form.addEventListener('submit', (e) => {
+    // Password history
+    let passwordHistory = [];
+
+    form.addEventListener('submit', e => {
       e.preventDefault();
+      loadingMsg.textContent = 'Generating password...';
 
-      loadingMessage.textContent = "Generating...";
-      loadingMessage.style.display = "block";
+      // Get values
+      const length = parseInt(form.length.value, 10);
+      const options = {
+        uppercase: form.uppercase.checked,
+        lowercase: form.lowercase.checked,
+        numbers: form.numbers.checked,
+        symbols: form.symbols.checked,
+      };
 
-      setTimeout(() => {
-        const length = Math.min(Math.max(parseInt(form.length.value), 8), 50);
-        const useUpper = form.upper.checked;
-        const useLower = form.lower.checked;
-        const useNumbers = form.numbers.checked;
-        const useSymbols = form.symbols.checked;
+      // Validation
+      if (isNaN(length) || length < 8 || length > 24) {
+        alert('Please enter a valid password length between 8 and 24.');
+        loadingMsg.textContent = '';
+        return;
+      }
+      if (!options.uppercase && !options.lowercase && !options.numbers && !options.symbols) {
+        alert('Please select at least one character type.');
+        loadingMsg.textContent = '';
+        return;
+      }
 
-        const pwd = generatePassword(length, useUpper, useLower, useNumbers, useSymbols);
-        output.textContent = pwd || "Please select at least one character type.";
+      // Generate password
+      const password = generatePassword(length, options);
 
-        if(pwd) {
-          // Add to history and update UI
-          passwordHistory.unshift(pwd);
-          if(passwordHistory.length > 10) passwordHistory.pop(); // limit to 10 items
-          updateHistory();
-        }
+      loadingMsg.textContent = '';
+      if (password === '') {
+        output.textContent = 'Error generating password.';
+        copyBtn.style.display = 'none';
+        return;
+      }
 
-        loadingMessage.style.display = "none";
-      }, 100); // simulate async
+      output.textContent = password;
+      copyBtn.style.display = 'inline-block';
+
+      // Add to history
+      passwordHistory.unshift(password);
+      updateHistory();
     });
 
+    // Copy button functionality
     copyBtn.addEventListener('click', () => {
-      const pwd = output.textContent;
-      if(pwd && pwd !== "Please select at least one character type.") {
-        navigator.clipboard.writeText(pwd).then(() => {
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => {
-            copyBtn.textContent = "Copy Password";
-          }, 1500);
-        }).catch(() => {
-          alert("Failed to copy. Please copy manually.");
-        });
-      }
+      const password = output.textContent;
+      if (!password) return;
+
+      navigator.clipboard.writeText(password).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy Password';
+        }, 1500);
+      }).catch(() => {
+        alert('Failed to copy password. Please copy manually.');
+      });
     });
 
     function updateHistory() {
-      historyList.innerHTML = "";
-      passwordHistory.forEach(pwd => {
+      if (passwordHistory.length === 0) {
+        historySection.style.display = 'none';
+        return;
+      }
+      historySection.style.display = 'block';
+      historyList.innerHTML = '';
+      passwordHistory.slice(0, 5).forEach(pw => {
         const li = document.createElement('li');
-        li.textContent = pwd;
+        li.textContent = pw;
         historyList.appendChild(li);
       });
     }
+
+    // Dark mode toggle
+    const darkToggle = document.getElementById('darkToggle');
+    const darkToggleContainer = document.getElementById('dark-mode-toggle');
+
+    function setDarkMode(enabled) {
+      if (enabled) {
+        document.body.classList.add('dark');
+        darkToggle.checked = true;
+        darkToggleContainer.setAttribute('aria-checked', 'true');
+      } else {
+        document.body.classList.remove('dark');
+        darkToggle.checked = false;
+        darkToggleContainer.setAttribute('aria-checked', 'false');
+      }
+    }
+
+    // Load dark mode preference from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode');
+    setDarkMode(savedDarkMode === 'true');
+
+    darkToggle.addEventListener('change', () => {
+      setDarkMode(darkToggle.checked);
+      localStorage.setItem('darkMode', darkToggle.checked);
+    });
+
+    // Make dark mode toggle keyboard accessible with Space/Enter
+    darkToggleContainer.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        darkToggle.checked = !darkToggle.checked;
+        setDarkMode(darkToggle.checked);
+        localStorage.setItem('darkMode', darkToggle.checked);
+      }
+    });
   </script>
 </body>
 </html>
