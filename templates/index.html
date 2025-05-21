@@ -4,29 +4,32 @@
   <meta charset="UTF-8">
   <title>ChessProKing-TM's Password Simulator</title>
   <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --bg-color: #f4f6f9;
-      --text-color: #000;
-      --card-bg: #ffffff;
-      --input-bg: #fff;
-      --highlight: #1a73e8;
-      --box-shadow: rgba(0, 0, 0, 0.1);
+      --bg: #f4f6f9;
+      --text: #222;
+      --box-bg: #fff;
+      --btn-bg: #1a73e8;
+      --btn-hover: #1669c1;
+      --link: #1a73e8;
     }
 
-    body.dark {
-      --bg-color: #121212;
-      --text-color: #fff;
-      --card-bg: #1e1e1e;
-      --input-bg: #2c2c2c;
-      --highlight: #90caf9;
-      --box-shadow: rgba(255, 255, 255, 0.05);
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #e0e0e0;
+        --box-bg: #1e1e1e;
+        --btn-bg: #3b82f6;
+        --btn-hover: #2563eb;
+        --link: #90caf9;
+      }
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
       display: flex;
@@ -34,11 +37,10 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
     }
 
     h1 {
-      color: var(--highlight);
+      color: var(--btn-bg);
       margin-top: 40px;
       text-align: center;
     }
@@ -50,7 +52,7 @@
     }
 
     .profile-link a {
-      color: var(--highlight);
+      color: var(--link);
       text-decoration: none;
     }
 
@@ -59,10 +61,10 @@
     }
 
     form {
-      background: var(--card-bg);
+      background: var(--box-bg);
       padding: 30px 40px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px var(--box-shadow);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 300px;
     }
 
@@ -72,20 +74,10 @@
       font-size: 15px;
     }
 
-    input[type="number"],
-    input[type="submit"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      background: var(--input-bg);
-      color: var(--text-color);
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-
     input[type="number"] {
       width: 60px;
+      padding: 5px;
+      margin-left: 10px;
     }
 
     input[type="checkbox"] {
@@ -93,34 +85,25 @@
     }
 
     input[type="submit"] {
-      background-color: var(--highlight);
+      background-color: var(--btn-bg);
       color: white;
+      padding: 10px 16px;
       border: none;
+      border-radius: 6px;
+      cursor: pointer;
       font-size: 15px;
       margin-top: 10px;
+      width: 100%;
       transition: background-color 0.3s;
-      cursor: pointer;
     }
 
     input[type="submit"]:hover {
-      background-color: #1669c1;
+      background-color: var(--btn-hover);
     }
 
-    #loading-message {
-      margin-top: 10px;
-      color: #888;
-      font-style: italic;
-      display: none;
-    }
-
-    #output {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    h2 {
+    h2, h3 {
       margin-top: 30px;
-      color: var(--text-color);
+      color: var(--text);
     }
 
     code {
@@ -130,18 +113,32 @@
       font-size: 1.1em;
     }
 
-    p strong {
-      color: #0b8043;
+    .copy-button {
+      margin-top: 10px;
+      background-color: var(--btn-bg);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    .toggle-mode {
-      margin-top: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--highlight);
-      background: none;
-      border: none;
-      text-decoration: underline;
+    .copy-button:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .history {
+      margin-top: 20px;
+      max-width: 300px;
+    }
+
+    .history ul {
+      padding-left: 20px;
+    }
+
+    .history code {
+      display: inline-block;
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -151,103 +148,42 @@
     Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
   </div>
 
-  <button class="toggle-mode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-
-  <div id="loading-message">Loading...</div>
-
-  <form id="password-form">
+  <form method="post">
     <label>Password Length:
-      <input type="number" name="length" id="length" min="4" max="50" value="12">
+      <input type="number" name="length" min="4" max="50" value="12">
     </label>
-    <label><input type="checkbox" name="upper" id="upper"> Include Uppercase</label>
-    <label><input type="checkbox" name="lower" id="lower"> Include Lowercase</label>
-    <label><input type="checkbox" name="digits" id="digits"> Include Digits</label>
-    <label><input type="checkbox" name="special" id="special"> Include Special Characters</label>
+    <label><input type="checkbox" name="upper" checked> Include Uppercase</label>
+    <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
+    <label><input type="checkbox" name="digits" checked> Include Digits</label>
+    <label><input type="checkbox" name="special" checked> Include Special Characters</label>
+    <label><input type="checkbox" name="readable"> Generate Readable Password</label>
     <input type="submit" value="Generate Password">
   </form>
 
-  <div id="output"></div>
+  {% if password %}
+    <h2>Your Password: <code id="password">{{ password }}</code></h2>
+    <button class="copy-button" onclick="copyPassword()">Copy</button>
+    <p>Strength: <strong>{{ strength }}</strong></p>
+  {% endif %}
+
+  {% if history %}
+    <div class="history">
+      <h3>Recent Passwords:</h3>
+      <ul>
+        {% for p in history %}
+          <li><code>{{ p }}</code></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 
   <script>
-    const form = document.getElementById('password-form');
-    const loadingMsg = document.getElementById('loading-message');
-    const output = document.getElementById('output');
-    const settings = ['upper', 'lower', 'digits', 'special'];
-
-    // Dark Mode Setup
-    function applyDarkMode() {
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark');
-      } else {
-        document.body.classList.remove('dark');
-      }
-    }
-
-    function toggleDarkMode() {
-      const isDark = document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', isDark);
-    }
-
-    // Load saved states
-    window.addEventListener('load', () => {
-      applyDarkMode();
-      settings.forEach(id => {
-        const saved = localStorage.getItem(id);
-        if (saved !== null) {
-          document.getElementById(id).checked = saved === 'true';
-        }
+    function copyPassword() {
+      const password = document.getElementById("password").textContent;
+      navigator.clipboard.writeText(password).then(() => {
+        alert("Password copied to clipboard!");
       });
-    });
-
-    // Save checkbox states
-    settings.forEach(id => {
-      document.getElementById(id).addEventListener('change', (e) => {
-        localStorage.setItem(id, e.target.checked);
-      });
-    });
-
-    // Form handler
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      loadingMsg.style.display = 'block';
-      output.innerHTML = '';
-
-      const length = parseInt(document.getElementById('length').value);
-      const useUpper = document.getElementById('upper').checked;
-      const useLower = document.getElementById('lower').checked;
-      const useDigits = document.getElementById('digits').checked;
-      const useSpecial = document.getElementById('special').checked;
-
-      const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const lower = 'abcdefghijklmnopqrstuvwxyz';
-      const digits = '0123456789';
-      const special = '!@#$%^&*()-_=+[]{}|;:,.<>?';
-
-      let allChars = '';
-      if (useUpper) allChars += upper;
-      if (useLower) allChars += lower;
-      if (useDigits) allChars += digits;
-      if (useSpecial) allChars += special;
-
-      if (!allChars) {
-        output.innerHTML = '<p>Please select at least one character set.</p>';
-        loadingMsg.style.display = 'none';
-        return;
-      }
-
-      let password = '';
-      for (let i = 0; i < length; i++) {
-        const rand = Math.floor(Math.random() * allChars.length);
-        password += allChars[rand];
-      }
-
-      let strength = 'Weak';
-      if (length >= 12 && useUpper && useLower && useDigits && useSpecial) strength = 'Strong';
-      else if (length >= 8 && (useUpper + useLower + useDigits + useSpecial >= 3)) strength = 'Medium';
-
-      output.innerHTML = `<h2>Your Password: <code>${password}</code></h2><p>Strength: <strong>${strength}</strong></p>`;
-      loadingMsg.style.display = 'none';
-    });
+    }
   </script>
 </body>
 </html>
