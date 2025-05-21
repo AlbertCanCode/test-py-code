@@ -1,58 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>ChessProKing-TM's Password Simulator</title>
   <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --bg: #f4f6f9;
-      --text: #222;
-      --box-bg: #fff;
-      --btn-bg: #1a73e8;
-      --btn-hover: #1669c1;
-      --link: #1a73e8;
+      --bg-color: #f4f6f9;
+      --text-color: #000;
+      --card-color: #fff;
+      --primary: #1a73e8;
+      --hover: #1669c1;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #121212;
-        --text: #e0e0e0;
-        --box-bg: #1e1e1e;
-        --btn-bg: #3b82f6;
-        --btn-hover: #2563eb;
-        --link: #90caf9;
-      }
+    [data-theme='dark'] {
+      --bg-color: #121212;
+      --text-color: #eee;
+      --card-color: #1f1f1f;
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
+      transition: all 0.3s ease;
     }
 
     h1 {
-      color: var(--btn-bg);
       margin-top: 40px;
-      text-align: center;
+      color: var(--primary);
     }
 
     .profile-link {
-      margin-top: 5px;
-      margin-bottom: 20px;
+      margin: 5px 0 20px;
       font-size: 14px;
     }
 
     .profile-link a {
-      color: var(--link);
+      color: var(--primary);
       text-decoration: none;
     }
 
@@ -61,11 +52,12 @@
     }
 
     form {
-      background: var(--box-bg);
+      background: var(--card-color);
       padding: 30px 40px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 300px;
+      margin-bottom: 20px;
     }
 
     label {
@@ -84,26 +76,25 @@
       margin-right: 8px;
     }
 
-    input[type="submit"] {
-      background-color: var(--btn-bg);
+    input[type="submit"], button {
+      background-color: var(--primary);
       color: white;
       padding: 10px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 15px;
-      margin-top: 10px;
       width: 100%;
+      margin-top: 10px;
       transition: background-color 0.3s;
     }
 
-    input[type="submit"]:hover {
-      background-color: var(--btn-hover);
+    input[type="submit"]:hover, button:hover {
+      background-color: var(--hover);
     }
 
-    h2, h3 {
+    h2 {
       margin-top: 30px;
-      color: var(--text);
     }
 
     code {
@@ -113,32 +104,27 @@
       font-size: 1.1em;
     }
 
-    .copy-button {
-      margin-top: 10px;
-      background-color: var(--btn-bg);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
+    .copy-btn {
+      margin-top: 8px;
     }
 
-    .copy-button:hover {
-      background-color: var(--btn-hover);
+    .theme-toggle {
+      margin: 10px auto;
+      text-align: center;
     }
 
     .history {
       margin-top: 20px;
-      max-width: 300px;
+      max-width: 320px;
     }
 
     .history ul {
       padding-left: 20px;
     }
 
-    .history code {
-      display: inline-block;
-      margin-bottom: 5px;
+    .history li {
+      margin-bottom: 4px;
+      font-size: 0.95em;
     }
   </style>
 </head>
@@ -148,7 +134,11 @@
     Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
   </div>
 
-  <form method="post">
+  <div class="theme-toggle">
+    <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+  </div>
+
+  <form method="post" onsubmit="return false;">
     <label>Password Length:
       <input type="number" name="length" min="4" max="50" value="12">
     </label>
@@ -156,34 +146,51 @@
     <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
     <label><input type="checkbox" name="digits" checked> Include Digits</label>
     <label><input type="checkbox" name="special" checked> Include Special Characters</label>
-    <label><input type="checkbox" name="readable"> Generate Readable Password</label>
-    <input type="submit" value="Generate Password">
+    <label><input type="checkbox" name="readable"> Use Readable Words</label>
+    <input type="submit" value="Generate Password" onclick="generatePassword()">
   </form>
 
-  {% if password %}
-    <h2>Your Password: <code id="password">{{ password }}</code></h2>
-    <button class="copy-button" onclick="copyPassword()">Copy</button>
-    <p>Strength: <strong>{{ strength }}</strong></p>
-  {% endif %}
+  <div id="result">
+    {% if password %}
+      <h2>Your Password: <code id="pw-text">{{ password }}</code></h2>
+      <button class="copy-btn" onclick="copyToClipboard()">Copy Password</button>
+      <p>Strength: <strong>{{ strength }}</strong></p>
+    {% endif %}
+  </div>
 
-  {% if history %}
-    <div class="history">
-      <h3>Recent Passwords:</h3>
-      <ul>
-        {% for p in history %}
-          <li><code>{{ p }}</code></li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
+  <div class="history">
+    <h3>Password History</h3>
+    <ul id="history-list">
+      {% for past in history %}
+        <li>{{ past }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 
   <script>
-    function copyPassword() {
-      const password = document.getElementById("password").textContent;
-      navigator.clipboard.writeText(password).then(() => {
-        alert("Password copied to clipboard!");
-      });
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      localStorage.setItem("theme", current === "dark" ? "light" : "dark");
     }
+
+    function loadTheme() {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+
+    function copyToClipboard() {
+      const pw = document.getElementById("pw-text").innerText;
+      navigator.clipboard.writeText(pw);
+      alert("Password copied to clipboard!");
+    }
+
+    function generatePassword() {
+      // Use AJAX or Fetch API if needed. Otherwise, keep using Flask POST if handling in backend.
+      document.querySelector("form").submit(); // Keep for now.
+    }
+
+    loadTheme();
   </script>
 </body>
 </html>
