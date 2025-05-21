@@ -6,100 +6,132 @@
   <meta name="google-site-verification" content="hxiX__ldpj9hmreGCLfXADf1fZYuTdIq3i8BY7imPU0" />
   <style>
     :root {
-      --bg-color: #f4f6f9;
-      --text-color: #000;
-      --card-color: #fff;
-      --primary: #1a73e8;
-      --hover: #1669c1;
-      --badge-bg: #e0f7fa;
-      --badge-text: #006064;
-    }
+      --bg-light: #f4f6f9;
+      --text-light: #222;
+      --card-light: #fff;
+      --button-bg-light: #1a73e8;
+      --button-hover-light: #1669c1;
 
-    [data-theme='dark'] {
-      --bg-color: #121212;
-      --text-color: #eee;
-      --card-color: #1f1f1f;
-      --badge-bg: #004d40;
-      --badge-text: #b2dfdb;
+      --bg-dark: #121212;
+      --text-dark: #eee;
+      --card-dark: #1e1e1e;
+      --button-bg-dark: #0056b3;
+      --button-hover-dark: #003f7d;
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background-color: var(--bg-light);
+      color: var(--text-light);
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       min-height: 100vh;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
     }
 
     h1 {
+      color: var(--button-bg-light);
       margin-top: 40px;
-      color: var(--primary);
+      text-align: center;
+      transition: color 0.3s;
+    }
+    body.dark h1 {
+      color: var(--button-bg-dark);
     }
 
     .profile-link {
-      margin: 5px 0 20px;
+      margin-top: 5px;
+      margin-bottom: 20px;
       font-size: 14px;
     }
-
     .profile-link a {
-      color: var(--primary);
+      color: var(--button-bg-light);
       text-decoration: none;
+      transition: color 0.3s;
     }
-
     .profile-link a:hover {
       text-decoration: underline;
     }
+    body.dark .profile-link a {
+      color: var(--button-bg-dark);
+    }
 
     form {
-      background: var(--card-color);
+      background: var(--card-light);
       padding: 30px 40px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 300px;
-      margin-bottom: 20px;
+      width: 320px;
+      transition: background 0.3s;
+    }
+    body.dark form {
+      background: var(--card-dark);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
     }
 
     label {
       display: block;
       margin-bottom: 15px;
       font-size: 15px;
+      cursor: pointer;
     }
-
     input[type="number"] {
       width: 60px;
       padding: 5px;
       margin-left: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: border-color 0.3s;
     }
-
+    body.dark input[type="number"] {
+      background: #333;
+      color: #eee;
+      border-color: #555;
+    }
     input[type="checkbox"] {
       margin-right: 8px;
       cursor: pointer;
     }
 
     input[type="submit"], button {
-      background-color: var(--primary);
+      background-color: var(--button-bg-light);
       color: white;
       padding: 10px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 15px;
-      width: 100%;
       margin-top: 10px;
+      width: 100%;
       transition: background-color 0.3s;
     }
-
     input[type="submit"]:hover, button:hover {
-      background-color: var(--hover);
+      background-color: var(--button-hover-light);
+    }
+    body.dark input[type="submit"], body.dark button {
+      background-color: var(--button-bg-dark);
+    }
+    body.dark input[type="submit"]:hover, body.dark button:hover {
+      background-color: var(--button-hover-dark);
     }
 
-    h2 {
+    #password-output {
       margin-top: 30px;
+      color: var(--text-light);
+      text-align: center;
+      transition: color 0.3s;
+    }
+    body.dark #password-output {
+      color: var(--text-dark);
     }
 
     code {
@@ -108,162 +140,228 @@
       border-radius: 4px;
       font-size: 1.1em;
       user-select: all;
+      transition: background 0.3s;
+    }
+    body.dark code {
+      background: #444;
+      color: #ddd;
     }
 
-    .copy-btn {
-      margin-top: 8px;
+    p strong {
+      color: #0b8043;
     }
 
-    .theme-toggle {
-      margin: 10px auto 20px;
-      text-align: center;
+    #loading-message {
+      margin-top: 10px;
+      color: #888;
+      font-style: italic;
+      display: none;
     }
 
-    .history {
-      margin-top: 20px;
-      max-width: 320px;
-    }
-
-    .history ul {
-      padding-left: 20px;
-    }
-
-    .history li {
-      margin-bottom: 4px;
-      font-size: 0.95em;
-      word-break: break-word;
-    }
-
-    /* Badge style */
     .security-badge {
-      background-color: var(--badge-bg);
-      color: var(--badge-text);
+      background-color: #e0f7fa;
+      color: #006064;
       font-size: 0.9em;
       padding: 10px 15px;
-      border-radius: 10px;
-      margin: 15px auto 30px;
-      width: 320px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      border-radius: 8px;
+      max-width: 500px;
+      margin: 20px auto 0 auto;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       user-select: none;
     }
+    body.dark .security-badge {
+      background-color: #004d40;
+      color: #a7ffeb;
+      box-shadow: 0 2px 6px rgba(255, 255, 255, 0.15);
+    }
 
-    .security-badge input[type="checkbox"] {
-      margin: 0;
+    /* Responsive */
+    @media screen and (max-width: 400px) {
+      form {
+        width: 90%;
+        padding: 20px;
+      }
+    }
+
+    /* Copy button style */
+    #copy-btn {
+      margin-top: 10px;
+      background-color: var(--button-bg-light);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
       cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    #copy-btn:hover {
+      background-color: var(--button-hover-light);
+    }
+    body.dark #copy-btn {
+      background-color: var(--button-bg-dark);
+    }
+    body.dark #copy-btn:hover {
+      background-color: var(--button-hover-dark);
+    }
+
+    /* History list style */
+    #history {
+      max-width: 320px;
+      margin: 20px auto 0 auto;
+      background: var(--card-light);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+      font-size: 14px;
+    }
+    body.dark #history {
+      background: var(--card-dark);
+      box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+    }
+    #history h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+    #history ul {
+      list-style: none;
+      padding-left: 0;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    #history ul li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ccc;
+      user-select: all;
+    }
+    body.dark #history ul li {
+      border-color: #555;
     }
   </style>
 </head>
 <body>
+  <button id="dark-toggle" aria-label="Toggle dark mode" title="Toggle dark mode" style="position: fixed; top: 10px; right: 10px; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer;">
+    🌙
+  </button>
+
   <h1>ChessProKing-TM's Password Simulator</h1>
   <div class="profile-link">
-    Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank">ChessProKing-TM</a>
+    Made by <a href="https://scratch.mit.edu/users/ChessProking-tm/" target="_blank" rel="noopener noreferrer">ChessProKing-TM</a>
   </div>
 
-  <div class="theme-toggle">
-    <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
-  </div>
-
-  <form method="post" onsubmit="return false;">
+  <form method="post" id="password-form" onsubmit="showLoading()">
     <label>Password Length:
-      <input type="number" name="length" min="4" max="50" value="12">
+      <input type="number" name="length" id="length" min="4" max="50" value="12" required>
     </label>
-    <label><input type="checkbox" name="upper" checked> Include Uppercase</label>
-    <label><input type="checkbox" name="lower" checked> Include Lowercase</label>
-    <label><input type="checkbox" name="digits" checked> Include Digits</label>
-    <label><input type="checkbox" name="special" checked> Include Special Characters</label>
-    <label><input type="checkbox" id="readable-checkbox" name="readable"> Use Readable Words</label>
-    <input type="submit" value="Generate Password" onclick="generatePassword()">
+    <label><input type="checkbox" name="upper" id="upper" checked> Include Uppercase</label>
+    <label><input type="checkbox" name="lower" id="lower" checked> Include Lowercase</label>
+    <label><input type="checkbox" name="digits" id="digits" checked> Include Digits</label>
+    <label><input type="checkbox" name="special" id="special" checked> Include Special Characters</label>
+    <label><input type="checkbox" id="readable" > Use Readable Words Mode</label>
+    <input type="submit" value="Generate Password">
   </form>
 
-  <div id="result">
-    {% if password %}
-      <h2>Your Password: <code id="pw-text">{{ password }}</code></h2>
-      <button class="copy-btn" onclick="copyToClipboard()">Copy Password</button>
-      <p>Strength: <strong>{{ strength }}</strong></p>
-    {% endif %}
+  <div id="loading-message">Loading...</div>
+
+  <div id="password-output" aria-live="polite" aria-atomic="true" style="display:none;">
+    <h2>Your Password: <code id="password-text"></code></h2>
+    <button id="copy-btn" aria-label="Copy password to clipboard">Copy Password</button>
+    <p>Password strength: <strong id="password-strength"></strong></p>
   </div>
 
-  <div class="history">
+  <div id="history" aria-label="Password history" hidden>
     <h3>Password History</h3>
-    <ul id="history-list">
-      {% for past in history %}
-        <li>{{ past }}</li>
-      {% endfor %}
-    </ul>
+    <ul id="history-list"></ul>
   </div>
 
-  <div class="security-badge">
-    <input type="checkbox" id="security-ack" />
-    <label for="security-ack">I confirm no analytics, cookies, or remote calls on this site</label>
+  <div class="security-badge" role="note" aria-label="Privacy statement">
+    🔒 We do NOT save any information, use cookies, analytics, or make remote calls. Your data stays on your device.
   </div>
 
   <script>
-    // --- THEME TOGGLE ---
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute("data-theme");
-      const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
+    // Dark mode toggle with persistence
+    const darkToggle = document.getElementById('dark-toggle');
+    const body = document.body;
+    const PASSWORD_HISTORY_KEY = 'password_history';
+    const READABLE_MODE_KEY = 'readable_mode';
+
+    // Load dark mode from localStorage
+    if (localStorage.getItem('dark_mode') === 'true') {
+      body.classList.add('dark');
+      darkToggle.textContent = '☀️';
     }
 
-    function loadTheme() {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.setAttribute("data-theme", saved);
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      if (body.classList.contains('dark')) {
+        darkToggle.textContent = '☀️';
+        localStorage.setItem('dark_mode', 'true');
+      } else {
+        darkToggle.textContent = '🌙';
+        localStorage.setItem('dark_mode', 'false');
+      }
+    });
+
+    // Save and restore readable checkbox state
+    const readableCheckbox = document.getElementById('readable');
+    if(localStorage.getItem(READABLE_MODE_KEY) === 'true') {
+      readableCheckbox.checked = true;
+    }
+    readableCheckbox.addEventListener('change', () => {
+      localStorage.setItem(READABLE_MODE_KEY, readableCheckbox.checked);
+    });
+
+    // Show loading message on form submit
+    function showLoading() {
+      document.getElementById('loading-message').style.display = 'block';
     }
 
-    // --- COPY PASSWORD ---
-    function copyToClipboard() {
-      const pw = document.getElementById("pw-text").innerText;
-      navigator.clipboard.writeText(pw);
-      alert("Password copied to clipboard!");
-    }
+    // Password copy button
+    const copyBtn = document.getElementById('copy-btn');
+    const passwordText = document.getElementById('password-text');
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(passwordText.textContent).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy Password', 1500);
+      });
+    });
 
-    // --- REMEMBER READABLE CHECKBOX ---
-    const readableCheckbox = document.getElementById("readable-checkbox");
+    // Password history management
+    const historyList = document.getElementById('history-list');
+    const historyDiv = document.getElementById('history');
 
-    function saveReadableState() {
-      localStorage.setItem("readableChecked", readableCheckbox.checked);
-    }
+    // Load password history from localStorage
+    let history = JSON.parse(localStorage.getItem(PASSWORD_HISTORY_KEY)) || [];
 
-    function loadReadableState() {
-      const saved = localStorage.getItem("readableChecked");
-      readableCheckbox.checked = saved === "true";
-    }
-
-    readableCheckbox.addEventListener("change", saveReadableState);
-
-    // --- SECURITY BADGE ---
-    const securityAck = document.getElementById("security-ack");
-
-    function saveSecurityAck() {
-      localStorage.setItem("securityAck", securityAck.checked);
-    }
-
-    function loadSecurityAck() {
-      const saved = localStorage.getItem("securityAck");
-      securityAck.checked = saved === "true";
-    }
-
-    securityAck.addEventListener("change", saveSecurityAck);
-
-    // --- FORM SUBMIT (calls Flask backend) ---
-    function generatePassword() {
-      // Optional: Check security acknowledgment before allowing generate
-      if (!securityAck.checked) {
-        alert("Please confirm no analytics, cookies, or remote calls by checking the box below.");
+    function renderHistory() {
+      if(history.length === 0) {
+        historyDiv.hidden = true;
         return;
       }
-      document.querySelector("form").submit();
+      historyDiv.hidden = false;
+      historyList.innerHTML = '';
+      history.forEach(pass => {
+        const li = document.createElement('li');
+        li.textContent = pass;
+        historyList.appendChild(li);
+      });
     }
 
-    // --- INITIAL LOAD ---
-    window.onload = function () {
-      loadTheme();
-      loadReadableState();
-      loadSecurityAck();
-    };
+    renderHistory();
+
+    // On page load, if password is present (server rendered), add to history
+    window.addEventListener('DOMContentLoaded', () => {
+      const pwd = passwordText.textContent.trim();
+      if(pwd.length > 0 && !history.includes(pwd)) {
+        history.push(pwd);
+        if(history.length > 10) history.shift(); // Keep last 10 passwords
+        localStorage.setItem(PASSWORD_HISTORY_KEY, JSON.stringify(history));
+        renderHistory();
+        document.getElementById('password-output').style.display = 'block';
+      }
+    });
   </script>
 </body>
 </html>
